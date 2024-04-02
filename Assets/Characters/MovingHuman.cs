@@ -2,18 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.RuleTile.TilingRuleOutput;
+using UnityEngine.UI;
 
 public class MovingHuman : MonoBehaviour
 {
-    public float moveSpeed = 5f; // Speed at which the character moves
-    public Animator animator; // Reference to the Animator component
+    public int max_health = 100;
+    public int current_health;
+
+    public Healthbar healthBar;
+
+    public float moveSpeed = 5f;
+    public Animator animator;
 
     private Vector2 movement;
     private float idleTimer = 0f;
     private bool isIdle = false;
+    
+    public void TakeDamage(int damage)
+    {
+        current_health -= damage;
+        healthBar.SetHealth(current_health);
+    }
+    
+    void Start()
+    {
+        current_health = max_health;
+        healthBar.SetMaxHealth(max_health);
+        Debug.Log(healthBar == null ? "HealthBar is not set" : "HealthBar is set");
+
+    }
 
     private void Update()
     {
+        //test health bar
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            TakeDamage(20);
+        }
         // Input handling for movement
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
@@ -47,6 +72,8 @@ public class MovingHuman : MonoBehaviour
             // Handle idle timer
             HandleIdleTimer();
         }
+
+
     }
 
     private void FixedUpdate()
@@ -74,4 +101,5 @@ public class MovingHuman : MonoBehaviour
             animator.SetBool("IsIdle", false);
         }
     }
+
 }
