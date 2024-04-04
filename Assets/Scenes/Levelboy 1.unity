@@ -1255,6 +1255,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7947911505737750450, guid: d5762f992ea3bd544bb8287f66e8f844, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7947911505737750455, guid: d5762f992ea3bd544bb8287f66e8f844, type: 3}
       propertyPath: m_Name
       value: Stone01
@@ -1575,6 +1579,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 14027141}
     m_Modifications:
+    - target: {fileID: 2055102311959635368, guid: 39562e88b536753438a3153c5fbdf7b8, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2055102311959635369, guid: 39562e88b536753438a3153c5fbdf7b8, type: 3}
       propertyPath: m_Name
       value: Bush01
@@ -1882,7 +1890,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 682329484}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.9999999
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2008,7 +2016,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 747348756}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9954773
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2151,7 +2159,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!4 &998325297 stripped
 Transform:
@@ -2533,6 +2541,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7947911505737750450, guid: 139b2d65b3145ad45bc13b6d111199de, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7947911505737750455, guid: 139b2d65b3145ad45bc13b6d111199de, type: 3}
       propertyPath: m_Name
       value: Stone00
@@ -2726,6 +2738,10 @@ PrefabInstance:
     - target: {fileID: 7947911505737750448, guid: d730038d263986f4dac93230e1dd62b0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7947911505737750450, guid: d730038d263986f4dac93230e1dd62b0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7947911505737750455, guid: d730038d263986f4dac93230e1dd62b0, type: 3}
       propertyPath: m_Name
@@ -3027,6 +3043,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 14027141}
     m_Modifications:
+    - target: {fileID: 2055102311959635368, guid: 39562e88b536753438a3153c5fbdf7b8, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2055102311959635369, guid: 39562e88b536753438a3153c5fbdf7b8, type: 3}
       propertyPath: m_Name
       value: Bush01
@@ -3084,6 +3104,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2880826916073712462, guid: 6ea82122630f5304986006e3b73566c6, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2880826916073712462, guid: 6ea82122630f5304986006e3b73566c6, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3591162071685673478, guid: 6ea82122630f5304986006e3b73566c6, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.7654538
@@ -3142,86 +3170,8 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3591162071685673478, guid: 6ea82122630f5304986006e3b73566c6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1651572761}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 9106850825060158115, guid: 6ea82122630f5304986006e3b73566c6, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1867732849}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6ea82122630f5304986006e3b73566c6, type: 3}
---- !u!1 &1625947168
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1625947171}
-  - component: {fileID: 1625947170}
-  - component: {fileID: 1625947169}
-  m_Layer: 5
-  m_Name: Image
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1625947169
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1625947168}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1625947170
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1625947168}
-  m_CullTransparentMesh: 1
---- !u!224 &1625947171
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1625947168}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1651572761}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 144.65, y: -52.52}
-  m_SizeDelta: {x: 157.54, y: 209.24}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1650023381
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3270,6 +3220,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7947911505737750450, guid: d5762f992ea3bd544bb8287f66e8f844, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7947911505737750455, guid: d5762f992ea3bd544bb8287f66e8f844, type: 3}
       propertyPath: m_Name
       value: Stone02
@@ -3310,7 +3264,6 @@ RectTransform:
   m_LocalScale: {x: 0.002, y: 0.002, z: 0.002}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1625947171}
   - {fileID: 1308479539}
   m_Father: {fileID: 1259764963}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3377,10 +3330,10 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1 &1652297398
 GameObject:
@@ -3575,6 +3528,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 14027141}
     m_Modifications:
+    - target: {fileID: 2055102311959635368, guid: 39562e88b536753438a3153c5fbdf7b8, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2055102311959635369, guid: 39562e88b536753438a3153c5fbdf7b8, type: 3}
       propertyPath: m_Name
       value: Bush01
@@ -3629,24 +3586,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2055102311959635375, guid: 39562e88b536753438a3153c5fbdf7b8, type: 3}
   m_PrefabInstance: {fileID: 1849561292}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1867732848 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9106850825060158115, guid: 6ea82122630f5304986006e3b73566c6, type: 3}
-  m_PrefabInstance: {fileID: 1606099685}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1867732849
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1867732848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 481151a3661b71d48baec8c5407b81e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  statusWindow: {fileID: 1625947168}
 --- !u!1 &1875418771
 GameObject:
   m_ObjectHideFlags: 0
@@ -3949,7 +3888,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.0005642617, y: 0.00014215936}
+  m_AnchoredPosition: {x: 0.0005642617, y: 0.00012579461}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &2082756598
@@ -14116,6 +14055,17 @@ PrefabInstance:
     - target: {fileID: 265855096871108638, guid: 41824176c39ef9b4ca44558987c6dd81, type: 3}
       propertyPath: m_Constraints
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1430411726411836835, guid: 41824176c39ef9b4ca44558987c6dd81, type: 3}
+      propertyPath: m_text
+      value: 'Egan the Woodcutter
+
+        Egan supplies wood to the village. Egan
+        knows the forest well. Egan fears wolves. Egan appreciates the quiet of nature.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 1430411726411836835, guid: 41824176c39ef9b4ca44558987c6dd81, type: 3}
+      propertyPath: m_fontSize
+      value: 29.1
       objectReference: {fileID: 0}
     - target: {fileID: 2084985084127259920, guid: 41824176c39ef9b4ca44558987c6dd81, type: 3}
       propertyPath: m_Name
