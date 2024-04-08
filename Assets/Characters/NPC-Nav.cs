@@ -3,81 +3,113 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class NPC_Nav : MonoBehaviour
+public class NPCMovement : MonoBehaviour
 {
-    public enum State { Idle, MovingToNPC, VisitingBuilding, Eating }
-    public State currentState = State.Idle;
-    public Transform target;
-    public Transform targetNPC;
-    public Transform building;
-    public Transform food;
+    public float visionRadius = 10f;
+    public float checkInterval = 2f; // How often to check for visible destinations
+    public LayerMask obstacleLayer; // Set this in the Inspector to match your environment's obstacles
+
     private NavMeshAgent agent;
-    private float detectionRadius = 5.0f;
-    private SphereCollider detectionCollider;
+    private List<Transform> visibleDestinations = new List<Transform>();
+    private float idleTime = 3.5f;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        SetupDetectionCollider();
+        StartCoroutine(VisibilityCheckRoutine());
+        StartCoroutine(IdleAndMoveRoutine());
     }
 
-    void SetupDetectionCollider()
+    IEnumerator VisibilityCheckRoutine()
     {
-        detectionCollider = gameObject.AddComponent<SphereCollider>();
-        detectionCollider.isTrigger = true;
-        detectionCollider.radius = detectionRadius;
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("NPC") && currentState == State.Idle)
+        while (true)
         {
-            targetNPC = other.transform;
-            currentState = State.MovingToNPC;
-            MoveToTarget(targetNPC.position);
+            yield return new WaitForSeconds(checkInterval);
+            UpdateVisibleDestinations();
         }
     }
-    
 
-     void Update()
+    void UpdateVisibleDestinations()
+{
+    visibleDestinations.Clear();
+    Debug.Log("Updating visible destinations...");
+
+    foreach (GameObject destination in GameObject.FindGameObjectsWithTag("Destination"))
     {
-        if (currentState == State.MovingToNPC && targetNPC != null)
+        if (IsDestinationVisible(destination.transform))
         {
-            if (!agent.pathPending && agent.remainingDistance < 1f)
+            visibleDestinations.Add(destination.transform);
+            Debug.Log($"Visible Destination Added: {destination.name}");
+        }
+    }
+
+    // If you want to print all visible destinations after the update
+    if (visibleDestinations.Count > 0)
+    {
+        Debug.Log("Currently visible destinations:");
+        foreach (var dest in visibleDestinations)
+        {
+            Debug.Log(dest.name);
+        }
+    }
+    else
+    {
+        Debug.Log("No visible destinations currently.");
+    }
+}
+
+
+    bool IsDestinationVisible(Transform destination)
+    {
+        Vector3 directionToDestination = destination.position - transform.position;
+        float distanceToDestination = Vector3.Distance(transform.position, destination.position);
+
+        if (distanceToDestination <= visionRadius)
+        {
+            if (!Physics.Raycast(transform.position, directionToDestination, distanceToDestination, obstacleLayer))
             {
-                StartCoroutine(PerformInteraction());
+                // No obstacle in the way
+                return true;
             }
         }
-        // Add more conditions based on states like VisitingBuilding, Eating, etc.
+
+        return false; // Destination is not visible
     }
 
-    IEnumerator PerformInteraction()
+    IEnumerator IdleAndMoveRoutine()
     {
-        // Wait at the NPC location
-        yield return new WaitForSeconds(5); // Wait time with the NPC
-
-        // Decide next action: go to a building or eat
-        DecideNextAction();
-    }
-
-     void DecideNextAction()
-    {
-        // Example decision-making (expand based on your game's logic)
-        currentState = Random.Range(0, 2) == 0 ? State.VisitingBuilding : State.Eating;
-        
-        if (currentState == State.VisitingBuilding)
+        while (true)
         {
-            MoveToTarget(building.position);
-        }
-        else if (currentState == State.Eating)
-        {
-            MoveToTarget(food.position);
+            yield return new WaitForSeconds(idleTime);
+
+            if (visibleDestinations.Count > 0)
+            {
+                Transform destination = ChooseRandomDestination();
+                if (destination != null)
+                {
+                    MoveToDestination(destination.position);
+                }
+            }
         }
     }
 
-    void MoveToTarget(Vector3 target)
+    Transform ChooseRandomDestination()
     {
-        agent.destination = target;
+        if (visibleDestinations.Count == 0) return null;
+        int randomIndex = Random.Range(0, visibleDestinations.Count);
+        return visibleDestinations[randomIndex];
     }
 
+    void MoveToDestination(Vector3 destination)
+    {
+        agent.SetDestination(destination);
+    }
+
+    void OnDrawGizmos(){
+        Gizmos.color = Color.yellow; // Set the color of the gizmo
+        Gizmos.DrawWireSphere(transform.position, visionRadius); // Draw a wire sphere representing the vision radius
+        }
 }
+
+
+
