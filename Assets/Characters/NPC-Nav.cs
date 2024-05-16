@@ -8,6 +8,8 @@ public class NPCMovement : MonoBehaviour
     public float visionRadius = 10f;
     public float checkInterval = 2f; // How often to check for visible destinations
     public LayerMask obstacleLayer; // Set this in the Inspector to match your environment's obstacles
+    public GameObject activitySymbol; // The symbol that appears over the NPC
+    public string activityDestinationTag = "Fireplace"; // Tag to trigger the activity symbol
 
     private NavMeshAgent agent;
     private List<Transform> visibleDestinations = new List<Transform>();
@@ -16,6 +18,7 @@ public class NPCMovement : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        activitySymbol.SetActive(false);  // Ensure the symbol is initially hidden
         StartCoroutine(VisibilityCheckRoutine());
         StartCoroutine(IdleAndMoveRoutine());
     }
@@ -97,7 +100,18 @@ public class NPCMovement : MonoBehaviour
     {
         if (visibleDestinations.Count == 0) return null;
         int randomIndex = Random.Range(0, visibleDestinations.Count);
-        return visibleDestinations[randomIndex];
+        Transform destinationTransform = visibleDestinations[randomIndex];
+
+        if (destinationTransform.CompareTag(activityDestinationTag))
+    {
+        activitySymbol.SetActive(true); // Show the symbol
+    }
+    else
+    {
+        activitySymbol.SetActive(false); // Hide the symbol
+    }
+
+    return destinationTransform;
     }
 
     void MoveToDestination(Vector3 destination)
