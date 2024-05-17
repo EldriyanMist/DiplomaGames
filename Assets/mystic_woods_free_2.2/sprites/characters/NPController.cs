@@ -21,4 +21,9 @@ public class NPCController : MonoBehaviour
             animator.SetTrigger("Attack");
         }
     }
+
+    void Attack()
+    {
+        animator.SetTrigger("Attack");
+    }
 }
