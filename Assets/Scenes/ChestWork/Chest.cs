@@ -2,23 +2,23 @@ using UnityEngine;
 
 public class Chest : MonoBehaviour
 {
+    public GameObject chestInventoryPanel; // Reference to the UI panel
+
     private bool isOpen = false;
 
-    // Reference to the inventory UI
-    public GameObject inventoryUI;
-
-    private void OnMouseDown()
+    void Start()
     {
-        if (!isOpen)
-        {
-            OpenChest();
-        }
+        chestInventoryPanel.SetActive(false); // Ensure the panel is hidden at start
     }
 
-    private void OpenChest()
+    void OnMouseDown()
     {
-        isOpen = true;
-        // Show the inventory UI
-        inventoryUI.SetActive(true);
+        ToggleChest();
+    }
+
+    public void ToggleChest()
+    {
+        isOpen = !isOpen;
+        chestInventoryPanel.SetActive(isOpen);
     }
 }
