@@ -1,31 +1,32 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Inventory : MonoBehaviour
+public class InventoryChest : MonoBehaviour
 {
-    public GameObject slotPrefab;
-    public int numberOfSlots = 15;
-    private GameObject[] slots;
+    public GameObject[] slots; // Array of slots
+    private Item[] items; // Array of items
 
     void Start()
     {
-        slots = new GameObject[numberOfSlots];
-        for (int i = 0; i < numberOfSlots; i++)
-        {
-            slots[i] = Instantiate(slotPrefab, transform);
-        }
+        items = new Item[slots.Length]; // Initialize the items array
     }
 
-    public void AddItem(Sprite itemIcon)
+    public void AddItem(Item newItem)
     {
-        for (int i = 0; i < numberOfSlots; i++)
+        for (int i = 0; i < items.Length; i++)
         {
-            Image slotImage = slots[i].GetComponent<Image>();
-            if (slotImage.sprite == null)
+            if (items[i] == null)
             {
-                slotImage.sprite = itemIcon;
+                items[i] = newItem;
+                UpdateSlot(i);
                 break;
             }
         }
+    }
+
+    void UpdateSlot(int index)
+    {
+        Image slotImage = slots[index].GetComponent<Image>();
+        slotImage.sprite = items[index].icon;
     }
 }
