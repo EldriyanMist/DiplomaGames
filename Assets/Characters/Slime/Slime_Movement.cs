@@ -10,11 +10,13 @@ public class SlimeMovement : MonoBehaviour
     private Vector2 moveDirection;
     private bool isMoving = false;
     public GameObject collectableItemPrefab; // Reference to the collectable item prefab
+    private Health health;
 
     void Start()
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        health = GetComponent<Health>();
 
         // Freeze Z rotation
         rb.freezeRotation = true;
@@ -113,22 +115,19 @@ public class SlimeMovement : MonoBehaviour
     }
 
     public void TriggerHit()
-{
-    Debug.Log("TriggerHit called");
-    animator.SetBool("Hit", true);
-    animator.SetBool("isJumpingLeft", false);
-    animator.SetBool("is_moving", false);
-    
+    {
+        Debug.Log("TriggerHit called");
+        animator.SetBool("Hit", true);
+        animator.SetBool("isJumpingLeft", false);
+        animator.SetBool("is_moving", false);
+        StartCoroutine(ResetHitState());
+    }
 
-    StartCoroutine(ResetHitState());
-}
-
-IEnumerator ResetHitState()
-{
-    yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
-    animator.SetBool("Hit", false);
-}
-
+    IEnumerator ResetHitState()
+    {
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+        animator.SetBool("Hit", false);
+    }
 
     public void Die()
     {
@@ -147,5 +146,12 @@ IEnumerator ResetHitState()
 
         // Destroy the slime object
         Destroy(gameObject);
+    }
+
+    // This method can be called by the NPC to apply damage to the Slime
+    public void TakeDamage(int damage)
+    {
+        health.TakeDamage(damage);
+        TriggerHit();
     }
 }

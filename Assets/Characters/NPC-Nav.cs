@@ -6,20 +6,31 @@ using UnityEngine.AI;
 public class NPCMovement : MonoBehaviour
 {
     public float visionRadius = 10f;
-    public float checkInterval = 2f; // How often to check for visible destinations
-    public LayerMask obstacleLayer; // Set this in the Inspector to match your environment's obstacles
-    public float attackRange = 1.5f; // Adjust as needed
+    public float checkInterval = 2f;
+    public LayerMask obstacleLayer;
+    public float attackRange = 1.5f;
+    public int attackDamage = 10;
 
     private NavMeshAgent agent;
     private List<Transform> visibleDestinations = new List<Transform>();
     private float idleTime = 3.5f;
 
-    public Animator animator;
+    private Collider2D attackHitbox;
+    private NPCController npcController;
 
     void Start()
     {
-        animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
+        attackHitbox = GetComponentInChildren<Collider2D>();
+        if (attackHitbox == null)
+        {
+            Debug.LogError("Attack hitbox collider not found!");
+        }
+        npcController = GetComponent<NPCController>();
+        if (npcController == null)
+        {
+            Debug.LogError("NPCController not found!");
+        }
         StartCoroutine(VisibilityCheckRoutine());
         StartCoroutine(IdleAndMoveRoutine());
     }
@@ -44,7 +55,6 @@ public class NPCMovement : MonoBehaviour
                 visibleDestinations.Add(destination.transform);
             }
         }
-
     }
 
     bool IsDestinationVisible(Transform destination)
@@ -54,14 +64,13 @@ public class NPCMovement : MonoBehaviour
 
         if (distanceToDestination <= visionRadius)
         {
-            if (!Physics.Raycast(transform.position, directionToDestination, distanceToDestination, obstacleLayer))
+            if (!Physics2D.Raycast(transform.position, directionToDestination, distanceToDestination, obstacleLayer))
             {
-                // No obstacle in the way
                 return true;
             }
         }
 
-        return false; // Destination is not visible
+        return false;
     }
 
     IEnumerator IdleAndMoveRoutine()
@@ -70,7 +79,6 @@ public class NPCMovement : MonoBehaviour
         {
             yield return new WaitForSeconds(idleTime);
 
-            // Check for the nearest enemy with the "Slime" tag
             Transform enemy = FindNearestEnemyWithTag("Slime");
             if (enemy != null)
             {
@@ -97,6 +105,8 @@ public class NPCMovement : MonoBehaviour
     void MoveToDestination(Vector3 destination)
     {
         agent.SetDestination(destination);
+        npcController.UpdateMovementAnimation(agent.velocity);
+        Debug.Log("Moving to destination: " + destination);
     }
 
     Transform FindNearestEnemyWithTag(string tag)
@@ -123,21 +133,37 @@ public class NPCMovement : MonoBehaviour
         while (Vector3.Distance(transform.position, enemy.position) > attackRange)
         {
             MoveToDestination(enemy.position);
-            yield return null; // Wait for the next frame
+            yield return null;
         }
 
-        // Attack logic (e.g., reduce enemy health)
-        Attack();
+        Attack(enemy);
     }
 
-
-    void Attack()
+    void Attack(Transform enemy)
     {
-        animator.SetTrigger("Attack");
+        npcController.TriggerAttack();
+        SlimeMovement slime = enemy.GetComponent<SlimeMovement>();
+        if (slime != null)
+        {
+            slime.TakeDamage(attackDamage);
+        }
     }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Slime"))
+        {
+            SlimeMovement slime = other.GetComponent<SlimeMovement>();
+            if (slime != null)
+            {
+                slime.TakeDamage(attackDamage);
+            }
+        }
+    }
+
     void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow; // Set the color of the gizmo
-        Gizmos.DrawWireSphere(transform.position, visionRadius); // Draw a wire sphere representing the vision radius
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, visionRadius);
     }
 }
