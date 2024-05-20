@@ -6,19 +6,31 @@ using UnityEngine.AI;
 public class NPCMovement : MonoBehaviour
 {
     public float visionRadius = 10f;
-    public float checkInterval = 2f; // How often to check for visible destinations
-    public LayerMask obstacleLayer; // Set this in the Inspector to match your environment's obstacles
-    public GameObject activitySymbol; // The symbol that appears over the NPC
-    public string activityDestinationTag = "Fireplace"; // Tag to trigger the activity symbol
+    public float checkInterval = 2f;
+    public LayerMask obstacleLayer;
+    public float attackRange = 1.5f;
+    public int attackDamage = 10;
 
     private NavMeshAgent agent;
     private List<Transform> visibleDestinations = new List<Transform>();
     private float idleTime = 3.5f;
 
+    private Collider2D attackHitbox;
+    private NPCController npcController;
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        activitySymbol.SetActive(false);  // Ensure the symbol is initially hidden
+        attackHitbox = GetComponentInChildren<Collider2D>();
+        if (attackHitbox == null)
+        {
+            Debug.LogError("Attack hitbox collider not found!");
+        }
+        npcController = GetComponent<NPCController>();
+        if (npcController == null)
+        {
+            Debug.LogError("NPCController not found!");
+        }
         StartCoroutine(VisibilityCheckRoutine());
         StartCoroutine(IdleAndMoveRoutine());
     }
@@ -33,34 +45,17 @@ public class NPCMovement : MonoBehaviour
     }
 
     void UpdateVisibleDestinations()
-{
-    visibleDestinations.Clear();
-    Debug.Log("Updating visible destinations...");
-
-    foreach (GameObject destination in GameObject.FindGameObjectsWithTag("Destination"))
     {
-        if (IsDestinationVisible(destination.transform))
+        visibleDestinations.Clear();
+
+        foreach (GameObject destination in GameObject.FindGameObjectsWithTag("Destination"))
         {
-            visibleDestinations.Add(destination.transform);
-            Debug.Log($"Visible Destination Added: {destination.name}");
+            if (IsDestinationVisible(destination.transform))
+            {
+                visibleDestinations.Add(destination.transform);
+            }
         }
     }
-
-    // If you want to print all visible destinations after the update
-    if (visibleDestinations.Count > 0)
-    {
-        Debug.Log("Currently visible destinations:");
-        foreach (var dest in visibleDestinations)
-        {
-            Debug.Log(dest.name);
-        }
-    }
-    else
-    {
-        Debug.Log("No visible destinations currently.");
-    }
-}
-
 
     bool IsDestinationVisible(Transform destination)
     {
@@ -69,14 +64,13 @@ public class NPCMovement : MonoBehaviour
 
         if (distanceToDestination <= visionRadius)
         {
-            if (!Physics.Raycast(transform.position, directionToDestination, distanceToDestination, obstacleLayer))
+            if (!Physics2D.Raycast(transform.position, directionToDestination, distanceToDestination, obstacleLayer))
             {
-                // No obstacle in the way
                 return true;
             }
         }
 
-        return false; // Destination is not visible
+        return false;
     }
 
     IEnumerator IdleAndMoveRoutine()
@@ -85,7 +79,12 @@ public class NPCMovement : MonoBehaviour
         {
             yield return new WaitForSeconds(idleTime);
 
-            if (visibleDestinations.Count > 0)
+            Transform enemy = FindNearestEnemyWithTag("Slime");
+            if (enemy != null)
+            {
+                yield return StartCoroutine(MoveAndAttack(enemy));
+            }
+            else if (visibleDestinations.Count > 0)
             {
                 Transform destination = ChooseRandomDestination();
                 if (destination != null)
@@ -100,30 +99,71 @@ public class NPCMovement : MonoBehaviour
     {
         if (visibleDestinations.Count == 0) return null;
         int randomIndex = Random.Range(0, visibleDestinations.Count);
-        Transform destinationTransform = visibleDestinations[randomIndex];
-
-        if (destinationTransform.CompareTag(activityDestinationTag))
-    {
-        activitySymbol.SetActive(true); // Show the symbol
-    }
-    else
-    {
-        activitySymbol.SetActive(false); // Hide the symbol
-    }
-
-    return destinationTransform;
+        return visibleDestinations[randomIndex];
     }
 
     void MoveToDestination(Vector3 destination)
     {
         agent.SetDestination(destination);
+        npcController.UpdateMovementAnimation(agent.velocity);
+        Debug.Log("Moving to destination: " + destination);
     }
 
-    void OnDrawGizmos(){
-        Gizmos.color = Color.yellow; // Set the color of the gizmo
-        Gizmos.DrawWireSphere(transform.position, visionRadius); // Draw a wire sphere representing the vision radius
+    Transform FindNearestEnemyWithTag(string tag)
+    {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag(tag);
+        Transform nearestEnemy = null;
+        float shortestDistance = Mathf.Infinity;
+
+        foreach (GameObject enemy in enemies)
+        {
+            float distance = Vector3.Distance(transform.position, enemy.transform.position);
+            if (distance < shortestDistance)
+            {
+                shortestDistance = distance;
+                nearestEnemy = enemy.transform;
+            }
         }
+
+        return nearestEnemy;
+    }
+
+    IEnumerator MoveAndAttack(Transform enemy)
+    {
+        while (Vector3.Distance(transform.position, enemy.position) > attackRange)
+        {
+            MoveToDestination(enemy.position);
+            yield return null;
+        }
+
+        Attack(enemy);
+    }
+
+    void Attack(Transform enemy)
+    {
+        npcController.TriggerAttack();
+        SlimeMovement slime = enemy.GetComponent<SlimeMovement>();
+        if (slime != null)
+        {
+            slime.TakeDamage(attackDamage);
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Slime"))
+        {
+            SlimeMovement slime = other.GetComponent<SlimeMovement>();
+            if (slime != null)
+            {
+                slime.TakeDamage(attackDamage);
+            }
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, visionRadius);
+    }
 }
-
-
-
