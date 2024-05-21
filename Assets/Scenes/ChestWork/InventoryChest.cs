@@ -9,11 +9,6 @@ public class InventoryChest : MonoBehaviour
     void Start()
     {
         items = new Item[slots.Length]; // Initialize the items array
-
-        for (int i = 0; i < slots.Length; i++)
-        {
-            slots[i].AddComponent<Slot>().index = i;
-        }
     }
 
     public void AddItem(Item newItem)
@@ -31,22 +26,9 @@ public class InventoryChest : MonoBehaviour
 
     void UpdateSlot(int index)
     {
-        Transform slotTransform = slots[index].transform;
-        Image slotImage = slotTransform.GetChild(0).GetComponent<Image>(); // Assuming the first child is the item image
-        slotImage.sprite = items[index]?.icon ?? null;
-        slotImage.gameObject.SetActive(items[index] != null);
-    }
+        Image slotImage = slots[index].GetComponent<Image>();
+        slotImage.sprite = items[index].icon;
 
-    public void SwapItems(Slot slotA, Slot slotB)
-    {
-        int indexA = slotA.index;
-        int indexB = slotB.index;
-
-        Item temp = items[indexA];
-        items[indexA] = items[indexB];
-        items[indexB] = temp;
-
-        UpdateSlot(indexA);
-        UpdateSlot(indexB);
+        slots[index].SetActive(true);
     }
 }

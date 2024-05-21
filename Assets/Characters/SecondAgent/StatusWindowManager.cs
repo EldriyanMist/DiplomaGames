@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 // StatusWindowManager.cs
-using UnityEngine;
 using TMPro; // Import the TextMesh Pro namespace
-using UnityEngine.UI;
 
 public class StatusWindowManager : MonoBehaviour
 {
