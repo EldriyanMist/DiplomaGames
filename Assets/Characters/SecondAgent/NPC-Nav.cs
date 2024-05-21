@@ -16,20 +16,19 @@ public class NPCMovement : MonoBehaviour
     private float idleTime = 3.5f;
 
     private Collider2D attackHitbox;
-    private NPCController npcController;
+
+    //adding npcController
+
+    public NPController npcController;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        npcController = GetComponent<NPController>();
         attackHitbox = GetComponentInChildren<Collider2D>();
         if (attackHitbox == null)
         {
             Debug.LogError("Attack hitbox collider not found!");
-        }
-        npcController = GetComponent<NPCController>();
-        if (npcController == null)
-        {
-            Debug.LogError("NPCController not found!");
         }
         StartCoroutine(VisibilityCheckRoutine());
         StartCoroutine(IdleAndMoveRoutine());
@@ -105,8 +104,6 @@ public class NPCMovement : MonoBehaviour
     void MoveToDestination(Vector3 destination)
     {
         agent.SetDestination(destination);
-        npcController.UpdateMovementAnimation(agent.velocity);
-        Debug.Log("Moving to destination: " + destination);
     }
 
     Transform FindNearestEnemyWithTag(string tag)
@@ -132,6 +129,7 @@ public class NPCMovement : MonoBehaviour
     {
         while (Vector3.Distance(transform.position, enemy.position) > attackRange)
         {
+            
             MoveToDestination(enemy.position);
             yield return null;
         }
@@ -141,11 +139,12 @@ public class NPCMovement : MonoBehaviour
 
     void Attack(Transform enemy)
     {
-        npcController.TriggerAttack();
+        npcController.Attack_animation();
         SlimeMovement slime = enemy.GetComponent<SlimeMovement>();
         if (slime != null)
         {
-            slime.TakeDamage(attackDamage);
+            //slime.TakeDamage(attackDamage);
+            
         }
     }
 
@@ -156,7 +155,7 @@ public class NPCMovement : MonoBehaviour
             SlimeMovement slime = other.GetComponent<SlimeMovement>();
             if (slime != null)
             {
-                slime.TakeDamage(attackDamage);
+                //slime.TakeDamage(attackDamage);
             }
         }
     }

@@ -11,6 +11,9 @@ public class SlimeMovement : MonoBehaviour
     private bool isMoving = false;
     public GameObject collectableItemPrefab; // Reference to the collectable item prefab
     private Health health;
+    public int damageAmount = 5; // Amount of damage the Slime deals
+    private UnityEngine.AI.NavMeshAgent navAgent;
+
 
     void Start()
     {
@@ -112,6 +115,20 @@ public class SlimeMovement : MonoBehaviour
             animator.SetBool("Hit", true);
             // Implement damage logic
         }
+        else if (collision.gameObject.GetComponent<NPC>() != null)
+        {
+            // Deal damage to NPC
+            animator.SetBool("Hit", true);
+            NPC npc = collision.gameObject.GetComponent<NPC>();
+            if (npc != null)
+            {
+                npc.TakeDamage(damageAmount);
+            }
+            else
+            {
+                Debug.LogError("NPC component is not found on the collided object");
+            }
+        }
     }
 
     public void TriggerHit()
@@ -151,7 +168,14 @@ public class SlimeMovement : MonoBehaviour
     // This method can be called by the NPC to apply damage to the Slime
     public void TakeDamage(int damage)
     {
-        health.TakeDamage(damage);
-        TriggerHit();
+        if (health != null)
+        {
+            health.TakeDamage(damage);
+            TriggerHit();
+        }
+        else
+        {
+            Debug.LogError("Health component is not found on the Slime");
+        }
     }
 }
