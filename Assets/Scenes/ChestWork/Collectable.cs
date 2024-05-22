@@ -4,14 +4,21 @@ public class Collectable : MonoBehaviour
 {
     public Item item; // Reference to the item scriptable object
 
-    private void OnMouseDown()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Assuming there's a way to get the player's inventory
-        InventoryChest playerInventory = FindObjectOfType<InventoryChest>();
-        if (playerInventory != null)
+        // Check if the object we collided with has the tag "NPC"
+        if (collision.CompareTag("NPC"))
         {
-            playerInventory.AddItem(item);
-            Destroy(gameObject); // Destroy the collectable item after it's collected
+            // Assuming there's a way to get the player's inventory
+            InventoryPlayer playerInventory = FindObjectOfType<InventoryPlayer>();
+            if (playerInventory != null)
+            {
+                bool wasAdded = playerInventory.AddItem(item); // Try to add the item to the player's inventory
+                if (wasAdded)
+                {
+                    Destroy(gameObject); // Destroy the collectable item only if it was successfully added
+                }
+            }
         }
     }
 }
