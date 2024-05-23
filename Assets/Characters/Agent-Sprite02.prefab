@@ -461,6 +461,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Ron
   Health: 100
+  MaxHealth: 0
   Level: 10
   Experience: 10
   MaxExperience: 10
@@ -521,7 +522,7 @@ MonoBehaviour:
     m_Bits: 0
   attackRange: 1.5
   attackDamage: 10
-  animator: {fileID: 5953596100061965923}
+  npcController: {fileID: 0}
 --- !u!114 &5729965163584268665
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -978,6 +979,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7956523692050466914}
   - component: {fileID: 8821222745509400826}
+  - component: {fileID: 2681907231246456041}
   m_Layer: 0
   m_Name: HitBox
   m_TagString: Untagged
@@ -994,7 +996,7 @@ Transform:
   m_GameObject: {fileID: 4224936035716909573}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.21305971, y: -0.10521994, z: 0.010372152}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1032,7 +1034,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.44024992, y: -0.18092453}
+  m_Offset: {x: 0.30562305, y: -0.71591187}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -1043,8 +1045,24 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5416584, y: 0.63815093}
+  m_Size: {x: 1.180162, y: 0.63815165}
   m_EdgeRadius: 0
+--- !u!114 &2681907231246456041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4224936035716909573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 150762bc5723f004e9398448182dba44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  swordCollider: {fileID: 0}
+  damage: 3
+  knockbackforce: 500
+  attackDirection: 0
 --- !u!1 &4732395365957262522
 GameObject:
   m_ObjectHideFlags: 0

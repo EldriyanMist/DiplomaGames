@@ -141,11 +141,6 @@ public class NPCMovement : MonoBehaviour
     {
         npcController.Attack_animation();
         SlimeMovement slime = enemy.GetComponent<SlimeMovement>();
-        if (slime != null)
-        {
-            //slime.TakeDamage(attackDamage);
-            
-        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -153,10 +148,6 @@ public class NPCMovement : MonoBehaviour
         if (other.CompareTag("Slime"))
         {
             SlimeMovement slime = other.GetComponent<SlimeMovement>();
-            if (slime != null)
-            {
-                //slime.TakeDamage(attackDamage);
-            }
         }
     }
 

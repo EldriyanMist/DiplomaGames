@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 8713488890085148096}
   - component: {fileID: 6194453843163190091}
   - component: {fileID: 1301523262352095883}
-  - component: {fileID: 2875787923090817867}
   - component: {fileID: 4878291155426799873}
   m_Layer: 0
   m_Name: Slime
@@ -127,6 +126,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 2
   collectableItemPrefab: {fileID: 5823573273838086058, guid: 14443f8e8d7f7824886f2a5adce22ed2, type: 3}
+  damageAmount: 5
 --- !u!50 &7383454440373573703
 Rigidbody2D:
   serializedVersion: 4
@@ -224,41 +224,6 @@ CircleCollider2D:
   m_Offset: {x: -0.0038764477, y: -0.020932853}
   serializedVersion: 2
   m_Radius: 0.06386403
---- !u!58 &2875787923090817867
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3926239140037280318}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.16
 --- !u!114 &4878291155426799873
 MonoBehaviour:
   m_ObjectHideFlags: 0

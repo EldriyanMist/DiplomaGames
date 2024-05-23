@@ -10,7 +10,6 @@ public class SlimeMovement : MonoBehaviour
     private Vector2 moveDirection;
     private bool isMoving = false;
     public GameObject collectableItemPrefab; // Reference to the collectable item prefab
-    private Health health;
     public int damageAmount = 5; // Amount of damage the Slime deals
     private UnityEngine.AI.NavMeshAgent navAgent;
 
@@ -19,7 +18,6 @@ public class SlimeMovement : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        health = GetComponent<Health>();
 
         // Freeze Z rotation
         rb.freezeRotation = true;
@@ -37,18 +35,6 @@ public class SlimeMovement : MonoBehaviour
         {
             rb.velocity = Vector2.zero;
             animator.SetBool("is_moving", false);
-        }
-
-        // Check for 'D' key press to trigger die animation
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            Die();
-        }
-
-        // Check for 'H' key press to trigger hit animation
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            TriggerHit();
         }
     }
 
@@ -112,13 +98,13 @@ public class SlimeMovement : MonoBehaviour
         // Handle collision with other objects
         if (collision.gameObject.tag == "Obstacle")
         {
-            animator.SetBool("Hit", true);
+            animator.SetBool("hit", true);
             // Implement damage logic
         }
         else if (collision.gameObject.GetComponent<NPC>() != null)
         {
             // Deal damage to NPC
-            animator.SetBool("Hit", true);
+            animator.SetBool("hit", true);
             NPC npc = collision.gameObject.GetComponent<NPC>();
             if (npc != null)
             {
@@ -134,7 +120,7 @@ public class SlimeMovement : MonoBehaviour
     public void TriggerHit()
     {
         Debug.Log("TriggerHit called");
-        animator.SetBool("Hit", true);
+        animator.SetBool("hit", true);
         animator.SetBool("isJumpingLeft", false);
         animator.SetBool("is_moving", false);
         StartCoroutine(ResetHitState());
@@ -148,8 +134,6 @@ public class SlimeMovement : MonoBehaviour
 
     public void Die()
     {
-        animator.SetBool("Hit", true);
-        animator.SetBool("Defeated", true);
         StartCoroutine(DieCoroutine());
     }
 
@@ -163,19 +147,5 @@ public class SlimeMovement : MonoBehaviour
 
         // Destroy the slime object
         Destroy(gameObject);
-    }
-
-    // This method can be called by the NPC to apply damage to the Slime
-    public void TakeDamage(int damage)
-    {
-        if (health != null)
-        {
-            health.TakeDamage(damage);
-            TriggerHit();
-        }
-        else
-        {
-            Debug.LogError("Health component is not found on the Slime");
-        }
     }
 }
