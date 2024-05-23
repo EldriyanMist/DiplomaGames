@@ -4287,7 +4287,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusWindow: {fileID: 1228155185}
   chestInventoryPanel: {fileID: 2088090164}
---- !u!114 &1259764971
+--- !u!114 &1259764977
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5318,7 +5318,7 @@ PrefabInstance:
       addedObject: {fileID: 1259764970}
     - targetCorrespondingSourceObject: {fileID: 9106850825060158115, guid: 6ea82122630f5304986006e3b73566c6, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1259764971}
+      addedObject: {fileID: 1259764977}
   m_SourcePrefab: {fileID: 100100000, guid: 6ea82122630f5304986006e3b73566c6, type: 3}
 --- !u!1001 &1622024896
 PrefabInstance:
