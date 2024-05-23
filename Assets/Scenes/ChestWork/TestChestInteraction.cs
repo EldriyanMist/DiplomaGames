@@ -39,7 +39,7 @@ public class TestChestInteraction : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.T))
             {
-                bool success = inventoryPlayer.TakeItemFromChest(chestInventory, 0); // Assume we are taking the item from the first slot for testing
+                bool success = inventoryPlayer.TakeItemFromChest(chestInventory, 3); // Assume we are taking the item from the first slot for testing
                 if (success)
                 {
                     Debug.Log("Item successfully taken from the chest.");

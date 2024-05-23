@@ -94,6 +94,10 @@ public class InventoryPlayer : MonoBehaviour
         }
         return false;
     }
+    public Item GetCurrentItem()
+    {
+        return currentItem; // Return the current item in the NPC's inventory
+    }
 }
 
 

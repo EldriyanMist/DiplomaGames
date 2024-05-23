@@ -47,4 +47,8 @@ public class InventoryChest : MonoBehaviour
         slotImage.sprite = items[index].icon;
         slots[index].SetActive(true);
     }
+    public Item[] GetItems()
+    {
+        return items; // Return the array of items in the chest's inventory
+    }
 }
