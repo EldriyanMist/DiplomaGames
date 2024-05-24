@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,54 +11,76 @@ public class InteractionSystem : MonoBehaviour
 
     void Start()
     {
-        interactionPanel.SetActive(false);
+        //interactionPanel.SetActive(false);
     }
+
 
     public void ShowInteractionMenu(GameObject item, List<Action> actions)
+{
+    currentItem = item;
+    interactionPanel.SetActive(true);
+    PositionInteractionPanel(item);
+
+    // Clear any existing buttons
+    foreach (Button button in currentButtons)
     {
-        currentItem = item;
-        interactionPanel.SetActive(true);
-        interactionPanel.transform.position = Input.mousePosition;
-
-        // Clear any existing buttons
-        foreach (Button button in currentButtons)
-        {
-            Destroy(button.gameObject);
-        }
-        currentButtons.Clear();
-
-        // Create buttons for each action
-        foreach (Action action in actions)
-        {
-            Button newButton = Instantiate(actionButtonPrefab, interactionPanel.transform);
-            newButton.GetComponentInChildren<Text>().text = action.actionName;
-            newButton.onClick.AddListener(() => ExecuteAction(action));
-            currentButtons.Add(newButton);
-        }
+        Destroy(button.gameObject);
     }
+    currentButtons.Clear();
+
+    // Create buttons for each action
+    foreach (Action action in actions)
+    {
+        Button newButton = Instantiate(actionButtonPrefab, interactionPanel.transform);
+        newButton.GetComponentInChildren<Text>().text = action.actionName;
+        newButton.onClick.AddListener(() => ExecuteAction(action));
+        Debug.Log("Button created for action: " + action.actionName);
+        currentButtons.Add(newButton);
+    }
+}
+
+
 
     public void HideInteractionMenu()
     {
         interactionPanel.SetActive(false);
     }
 
-    private void ExecuteAction(Action action)
+ private void ExecuteAction(Action action)
+{
+    Debug.Log($"{action.actionName} executed on {currentItem.name}");
+    // Add logic for each action type
+    switch (action.actionType)
     {
-        Debug.Log($"{action.actionName} executed on {currentItem.name}");
-        // Add logic for each action type
-        switch (action.actionType)
-        {
-            case ActionType.PickUp:
-                // Pick up logic
-                break;
-            case ActionType.Examine:
-                // Examine logic
-                break;
-            case ActionType.Use:
-                // Use logic
-                break;
-            // Add more cases as needed
-        }
-        HideInteractionMenu();
+        case ActionType.PickUp:
+            Debug.Log("Pick up logic executed.");
+            // Pick up logic
+            break;
+        case ActionType.Examine:
+            Debug.Log("Examine logic executed.");
+            // Examine logic
+            break;
+        case ActionType.Use:
+            Debug.Log("Use logic executed.");
+            // Use logic
+            break;
+        // Add more cases as needed
+    }
+    HideInteractionMenu();
+}
+
+
+    private void PositionInteractionPanel(GameObject item)
+    {
+        Vector3 screenPosition = Camera.main.WorldToScreenPoint(item.transform.position);
+        Vector3 panelPosition = screenPosition;
+        RectTransform panelRectTransform = interactionPanel.GetComponent<RectTransform>();
+
+        // Adjust the position to be to the left of the object
+        panelPosition.x += panelRectTransform.rect.width;
+        panelPosition.y += screenPosition.y; // Maintain the same y position
+
+        // Set the position of the interaction panel
+        interactionPanel.transform.position = panelPosition;
     }
 }

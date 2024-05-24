@@ -17,7 +17,6 @@ public class DamagableCharacter : MonoBehaviour, IDamagable
     public float Health {
         get { return health; }
         set {
-            print(value < health);
             if (value < health)
             {
                 anim.SetTrigger("hit");
