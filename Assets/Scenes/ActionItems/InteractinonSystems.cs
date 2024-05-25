@@ -11,7 +11,7 @@ public class InteractionSystem : MonoBehaviour
 
     void Start()
     {
-        //interactionPanel.SetActive(false);
+        interactionPanel.SetActive(false);
     }
 
 
