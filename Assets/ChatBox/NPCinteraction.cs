@@ -9,13 +9,13 @@ public class NPCinteraction : MonoBehaviour
             NPCChatbox myChatbox = GetComponent<NPCChatbox>();
             if (myChatbox != null)
             {
-                myChatbox.AddMessage("Hello there!");  // This NPC sends a message
+                myChatbox.SendMessageTo(collision.name, "Hello there!");  // This NPC sends a message
             }
 
             NPCChatbox otherChatbox = collision.GetComponent<NPCChatbox>();
             if (otherChatbox != null)
             {
-                otherChatbox.AddMessage("Hi, nice to meet you!");  // The other NPC responds
+                otherChatbox.SendMessageTo(name, "Hi, nice to meet you!");  // The other NPC responds
             }
         }
     }
