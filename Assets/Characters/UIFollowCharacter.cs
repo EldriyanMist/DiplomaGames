@@ -37,10 +37,6 @@ public class UIFollowCharacter : MonoBehaviour
             // Convert the character's world position to a screen position
             Vector3 screenPos = mainCamera.WorldToScreenPoint(characterTransform.position + offset);
 
-            // Debug logs to check the position values
-            Debug.Log("Character World Position: " + (characterTransform.position + offset));
-            Debug.Log("Screen Position: " + screenPos);
-
             // Set the position of the RectTransform to follow the character
             rectTransform.position = screenPos;
         }
