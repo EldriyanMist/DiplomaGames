@@ -47,7 +47,7 @@ public class NPCMovement : MonoBehaviour
     {
         visibleDestinations.Clear();
 
-        foreach (GameObject destination in GameObject.FindGameObjectsWithTag("Destination"))
+        foreach (GameObject destination in GameObject.FindGameObjectsWithTag("Interactable"))
         {
             if (IsDestinationVisible(destination.transform))
             {
@@ -149,7 +149,16 @@ public class NPCMovement : MonoBehaviour
         {
             SlimeMovement slime = other.GetComponent<SlimeMovement>();
         }
+        else if (other.CompareTag("Interactable")){
+        ItemInteractable item = other.GetComponent<ItemInteractable>();
+        if (item != null)
+        {
+            item.InteractWithNPC(GetComponent<NPC>());
+        }
     }
+    }
+
+
 
     void OnDrawGizmos()
     {
