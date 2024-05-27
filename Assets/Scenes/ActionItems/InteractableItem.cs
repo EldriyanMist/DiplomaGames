@@ -8,6 +8,7 @@ public class ItemInteractable : MonoBehaviour
     public Button actionButtonPrefab; // Prefab for action buttons
     public List<Action> actions; // List of actions available for this item
 
+    public NPC npc; // Reference to the NPC script
     private List<Button> actionButtons = new List<Button>();
 
     void Start()
@@ -40,27 +41,62 @@ public class ItemInteractable : MonoBehaviour
         interactionPanel.SetActive(!interactionPanel.activeSelf);
     }
 
-    private void ExecuteAction(Action action)
+    public void InteractWithNPC(NPC npc)
+    {
+        this.npc = npc;
+        interactionPanel.SetActive(true);
+        AutomaticallyChooseAction();
+    }
+
+    
+    private void AutomaticallyChooseAction()
+    {
+        // Automatically choose the first action or a specific one (e.g., "Use")
+        Action chosenAction = actions.Find(action => action.actionType == ActionType.Use);
+        if (chosenAction != null)
+        {
+            ExecuteAction(chosenAction);
+        }
+        else if (actions.Count > 0)
+        {
+            ExecuteAction(actions[0]); // Default to the first action if "Use" is not found
+        }
+    }
+
+
+    public void ExecuteAction(Action action)
     {
         Debug.Log($"{action.actionName} executed on {gameObject.name}");
         // Add logic for each action type
         switch (action.actionType)
         {
             case ActionType.PickUp:
-                Debug.Log("Pick up logic executed.");
+                npc.StartProgressBar(5f); // Example duration for PickUp action
                 // Pick up logic
                 break;
             case ActionType.Examine:
+                npc.StartProgressBar(3f); // Example duration for Examine action
                 Debug.Log("Examine logic executed.");
                 // Examine logic
                 break;
             case ActionType.Use:
+                npc.StartProgressBar(4f); // Example duration for Use action
                 Debug.Log("Use logic executed.");
                 // Use logic
                 break;
             // Add more cases as needed
         }
         interactionPanel.SetActive(false);
+    }
+
+    public List<string> GetAvailableActions()
+    {
+        List<string> actionNames = new List<string>();
+        foreach (Action action in actions)
+        {
+            actionNames.Add(action.actionName);
+        }
+        return actionNames;
     }
 
     private void UpdatePanelPosition()

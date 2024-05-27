@@ -5,7 +5,11 @@ using UnityEngine;
 public class NPC : MonoBehaviour
 {
     public Character characterData;
+
+    public ProgressBar progressBar;
     private bool isHealing = false;
+
+    private bool isIdle = false;
 
 void Start()
     {
@@ -61,5 +65,19 @@ void Start()
             }
         }
     }
+
+    public void StartProgressBar(float duration)
+{
+    isIdle = true;
+    progressBar.StartProgressBar(duration);
+    StartCoroutine(WaitForProgressBar(duration));
+}
+
+private IEnumerator WaitForProgressBar(float duration)
+{
+    yield return new WaitForSeconds(duration);
+    isIdle = false;
+}
+
 
 }
