@@ -8,8 +8,8 @@ public class ItemInteractable : MonoBehaviour
     public Button actionButtonPrefab; // Prefab for action buttons
     public List<Action> actions; // List of actions available for this item
 
-    public NPC npc; // Reference to the NPC script
     private List<Button> actionButtons = new List<Button>();
+    private NPC currentNPC; // To keep track of the NPC interacting with the item
 
     void Start()
     {
@@ -21,7 +21,7 @@ public class ItemInteractable : MonoBehaviour
         {
             Button newButton = Instantiate(actionButtonPrefab, interactionPanel.transform);
             newButton.GetComponentInChildren<Text>().text = action.actionName;
-            newButton.onClick.AddListener(() => ExecuteAction(action));
+            newButton.onClick.AddListener(() => ExecuteAction(action, currentNPC));
             actionButtons.Add(newButton);
         }
     }
@@ -43,30 +43,34 @@ public class ItemInteractable : MonoBehaviour
 
     public void InteractWithNPC(NPC npc)
     {
-        this.npc = npc;
+        currentNPC = npc;
         interactionPanel.SetActive(true);
-        AutomaticallyChooseAction();
+        AutomaticallyChooseAction(npc);
     }
 
-    
-    private void AutomaticallyChooseAction()
+    private void AutomaticallyChooseAction(NPC npc)
     {
         // Automatically choose the first action or a specific one (e.g., "Use")
         Action chosenAction = actions.Find(action => action.actionType == ActionType.Use);
         if (chosenAction != null)
         {
-            ExecuteAction(chosenAction);
+            ExecuteAction(chosenAction, npc);
         }
         else if (actions.Count > 0)
         {
-            ExecuteAction(actions[0]); // Default to the first action if "Use" is not found
+            ExecuteAction(actions[0], npc); // Default to the first action if "Use" is not found
         }
     }
 
-
-    public void ExecuteAction(Action action)
+    public void ExecuteAction(Action action, NPC npc)
     {
-        Debug.Log($"{action.actionName} executed on {gameObject.name}");
+        if (npc == null)
+        {
+            Debug.LogWarning("No NPC to interact with.");
+            return;
+        }
+
+        Debug.Log($"{action.actionName} executed on {gameObject.name} by {npc.name}");
         // Add logic for each action type
         switch (action.actionType)
         {

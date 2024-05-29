@@ -13,8 +13,20 @@ public class ProgressBar : MonoBehaviour
 public void StartProgressBar(float duration)
 {
     gameObject.SetActive(true);
-    StartCoroutine(FillSlider(duration));
+    Debug.Log("Use logic executed.");
+    StartCoroutine(FillSliderWhenActive(duration));
 }
+
+private IEnumerator FillSliderWhenActive(float duration)
+    {
+        // Wait until the game object is active
+        while (!gameObject.activeInHierarchy)
+        {
+            yield return null;
+        }
+
+        StartCoroutine(FillSlider(duration));
+    }
 
 private IEnumerator FillSlider(float duration)
 {

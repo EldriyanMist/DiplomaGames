@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
+    public int Id;
     public string Name;
     public int Health;
     public int MaxHealth;
@@ -13,17 +14,12 @@ public class Character : MonoBehaviour
     public int Strength;
     public int Agility;
     public string Background_info;
-
-
-
-    //lets add some functions to our character class lie die take damage and heal
+    public Vector2 Position;
 
     public void Die()
     {
         Debug.Log("The character has died");
     }
-
-    // Heal function should work after some time passed after taking damage
 
     public void TakeDamage(int damage)
     {
@@ -37,6 +33,14 @@ public class Character : MonoBehaviour
     public void Heal(int healAmount)
     {
         Health += healAmount;
+        if (Health > MaxHealth)
+        {
+            Health = MaxHealth;
+        }
     }
 
+    public string ToJson()
+    {
+        return JsonUtility.ToJson(this);
+    }
 }

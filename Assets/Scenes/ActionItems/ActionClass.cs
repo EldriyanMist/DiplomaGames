@@ -5,8 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class Action
 {
+    public string actionName;
     public ActionType actionType;
-    public string actionName; // Display name for the action
-    // Add other relevant fields, e.g., icon, description, etc.
+    public float duration;
 }
-

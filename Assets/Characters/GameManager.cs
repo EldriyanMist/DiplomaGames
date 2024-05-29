@@ -1,39 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
-
-// GameManager.cs
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public StatusWindowManager statusWindowManager;
-    public GameObject statusWindow;
-    private UIFollowCharacter uiFollowCharacter;
+    public GameObject statusWindowPrefab;
+    private Dictionary<Character, GameObject> statusWindows = new Dictionary<Character, GameObject>();
 
     void Start()
     {
-        uiFollowCharacter = statusWindow.GetComponent<UIFollowCharacter>();
-        Debug.Log("UIFollowCharacter component found: " + uiFollowCharacter);
+        // You can add initialization code here if needed
     }
 
     void Update()
     {
-        // Toggle the status window when the 'S' key is pressed
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            statusWindow.SetActive(!statusWindow.activeSelf);
-        }
+        // Any global update logic can go here
     }
 
-    // Method to update the status window for a specific character
-    public void UpdateStatusWindowForCharacter(Character character, Transform characterTransform)
+    public void ShowStatusWindow(Character character, Transform characterTransform)
     {
-        statusWindow.SetActive(true);
-        statusWindowManager.UpdateStatusWindow(character);
-        uiFollowCharacter.characterTransform = characterTransform; // Set the character transform
+        if (!statusWindows.ContainsKey(character))
+        {
+            GameObject newStatusWindow = Instantiate(statusWindowPrefab, transform);
+            StatusWindowManager manager = newStatusWindow.GetComponent<StatusWindowManager>();
+            manager.UpdateStatusWindow(character);
+            UIFollowCharacter follow = newStatusWindow.GetComponent<UIFollowCharacter>();
+            follow.characterTransform = characterTransform;
+            statusWindows.Add(character, newStatusWindow);
+        }
 
-        // Debug log to check if the character transform is updated
-        Debug.Log("Updating status window for: " + character.Name);
+        statusWindows[character].SetActive(true);
     }
 }
 
