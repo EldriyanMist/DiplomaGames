@@ -11758,8 +11758,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8366390546567534c8231703e1d02afe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statusWindowManager: {fileID: 1463543326}
-  statusWindow: {fileID: 106325219}
+  statusWindowPrefab: {fileID: 0}
 --- !u!4 &1454675248
 Transform:
   m_ObjectHideFlags: 0
@@ -11775,17 +11774,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1463543326 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5642837301306599272, guid: 41824176c39ef9b4ca44558987c6dd81, type: 3}
-  m_PrefabInstance: {fileID: 65641893}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6699945179c80204289175f3516f9e9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1520719207 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2055102311959635369, guid: 17b0c1ef334d17e4bbb74c4778001705, type: 3}
@@ -12045,11 +12033,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7812239908313305048, guid: bc1d29a9b9fac484491df6245f0c8f76, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.74
+      value: 1.76
       objectReference: {fileID: 0}
     - target: {fileID: 7812239908313305048, guid: bc1d29a9b9fac484491df6245f0c8f76, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.06
+      value: -1.94
       objectReference: {fileID: 0}
     - target: {fileID: 7812239908313305048, guid: bc1d29a9b9fac484491df6245f0c8f76, type: 3}
       propertyPath: m_LocalPosition.z
