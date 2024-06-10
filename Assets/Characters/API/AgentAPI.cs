@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.Collections.Generic;
 
 public class AgentAPI : MonoBehaviour
 {
@@ -9,20 +10,29 @@ public class AgentAPI : MonoBehaviour
     // Method to create a new agent
     public void CreateAgent(Character character)
     {
+        if (character == null)
+        {
+            Debug.LogError("Character is null in CreateAgent.");
+            return;
+        }
         StartCoroutine(CreateAgentCoroutine(character));
     }
 
     // Method to update an existing agent
     public void UpdateAgent(int agentId, Character character)
     {
+        if (character == null)
+        {
+            Debug.LogError("Character is null in UpdateAgent.");
+            return;
+        }
         StartCoroutine(UpdateAgentCoroutine(agentId, character));
     }
 
     private IEnumerator CreateAgentCoroutine(Character character)
     {
         string url = $"{baseURL}/agents/";
-        character.Id = character.GetInstanceID(); // Assign a unique ID
-        character.Position = character.transform.position;
+        character.Status = "active"; // Set the status field
         string jsonData = character.ToJson();
 
         Debug.Log($"Creating agent with JSON: {jsonData}");
@@ -39,10 +49,24 @@ public class AgentAPI : MonoBehaviour
             if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.LogError($"Error: {webRequest.error}");
+                Debug.LogError($"Response: {webRequest.downloadHandler.text}");
+            }
+            else if (webRequest.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Agent created successfully");
+                Debug.Log($"Response: {webRequest.downloadHandler.text}");
+
+                // Parse response to get the ID and assign it to the character
+                var responseData = JsonUtility.FromJson<Dictionary<string, string>>(webRequest.downloadHandler.text);
+                if (responseData.TryGetValue("id", out string id))
+                {
+                    character.Id = int.Parse(id);
+                }
             }
             else
             {
-                Debug.Log("Agent created successfully");
+                Debug.LogError($"Unexpected response status: {webRequest.responseCode}");
+                Debug.LogError($"Response: {webRequest.downloadHandler.text}");
             }
         }
     }
@@ -50,7 +74,6 @@ public class AgentAPI : MonoBehaviour
     private IEnumerator UpdateAgentCoroutine(int agentId, Character character)
     {
         string url = $"{baseURL}/agents/{agentId}";
-        character.Position = character.transform.position;
         string jsonData = character.ToJson();
 
         Debug.Log($"Updating agent with JSON: {jsonData}");
@@ -64,10 +87,17 @@ public class AgentAPI : MonoBehaviour
             if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.LogError($"Error: {webRequest.error}");
+                Debug.LogError($"Response: {webRequest.downloadHandler.text}");
+            }
+            else if (webRequest.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Agent updated successfully");
+                Debug.Log($"Response: {webRequest.downloadHandler.text}");
             }
             else
             {
-                Debug.Log("Agent updated successfully");
+                Debug.LogError($"Unexpected response status: {webRequest.responseCode}");
+                Debug.LogError($"Response: {webRequest.downloadHandler.text}");
             }
         }
     }

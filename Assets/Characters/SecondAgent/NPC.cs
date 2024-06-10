@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NPC : MonoBehaviour
@@ -15,21 +14,35 @@ public class NPC : MonoBehaviour
 
     void Start()
     {
-        characterData = new Character
+        if (statusWindow == null)
         {
-            Name = "NPC",
-            Health = 100,
-            MaxHealth = 100,
-            Level = 1,
-            Experience = 0,
-            MaxExperience = 100,
-            Strength = 10,
-            Agility = 5,
-            Background_info = "This is an NPC character.",
-            Position = transform.position
-        };
+            Debug.LogError("StatusWindow is not assigned.");
+            return;
+        }
+
+        if (progressBar == null)
+        {
+            Debug.LogError("ProgressBar is not assigned.");
+            return;
+        }
+
+        characterData = gameObject.AddComponent<Character>();
+        characterData.Name = "NPC";
+        characterData.Health = 100;
+        characterData.MaxHealth = 100;
+        characterData.Level = 1;
+        characterData.Experience = 0;
+        characterData.MaxExperience = 100;
+        characterData.Strength = 10;
+        characterData.Agility = 5;
+        characterData.Background_info = "This is an NPC character.";
 
         statusWindowManager = statusWindow.GetComponent<StatusWindowManager>();
+        if (statusWindowManager == null)
+        {
+            Debug.LogError("StatusWindowManager component not found on StatusWindow.");
+            return;
+        }
         statusWindow.SetActive(false);
 
         agentAPI = FindObjectOfType<AgentAPI>();
@@ -59,6 +72,11 @@ public class NPC : MonoBehaviour
             statusWindow.SetActive(true);
             statusWindowManager.UpdateStatusWindow(characterData);
             UIFollowCharacter follow = statusWindow.GetComponent<UIFollowCharacter>();
+            if (follow == null)
+            {
+                Debug.LogError("UIFollowCharacter component not found on StatusWindow.");
+                return;
+            }
             follow.characterTransform = transform;
         }
     }
@@ -75,7 +93,7 @@ public class NPC : MonoBehaviour
         {
             StartCoroutine(StartHealingAfterDelay(5f));
         }
-        agentAPI.UpdateAgent(characterData.Id, characterData); // Update agent on damage
+        //agentAPI.UpdateAgent(characterData.Id, characterData); // Update agent on damage
     }
 
     private IEnumerator StartHealingAfterDelay(float delay)
@@ -91,7 +109,7 @@ public class NPC : MonoBehaviour
         {
             isHealing = true;
             characterData.Heal(amount);
-            agentAPI.UpdateAgent(characterData.Id, characterData); // Update agent on heal
+            //agentAPI.UpdateAgent(characterData.Id, characterData); // Update agent on heal
         }
     }
 
