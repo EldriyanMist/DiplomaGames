@@ -6,6 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 40392399f70fb714fb050fcf0534ecf6
+  - enabled: 1
     path: Assets/Scenes/Levelboy 1.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/All Levelboy.unity
+    guid: e52a94f352f7c72469a19044571d26fc
+  - enabled: 1
+    path: Assets/Scenes/Boxes.unity
+    guid: 7f179e10efb1abb479bc38032943b3fa
   m_configObjects: {}
