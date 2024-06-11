@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Networking;
 
 public class NPCMovement : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class NPCMovement : MonoBehaviour
     private Collider2D attackHitbox;
 
     public NPController npcController;
+    public AgentAPI agentAPI;
+    public Character character;
 
     void Start()
     {
@@ -29,10 +32,22 @@ public class NPCMovement : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         npcController = GetComponent<NPController>();
         attackHitbox = GetComponentInChildren<Collider2D>();
-        
+        agentAPI = GetComponent<AgentAPI>();
+        character = GetComponent<Character>();
+
         if (attackHitbox == null)
         {
             Debug.LogError("Attack hitbox collider not found!");
+        }
+
+        if (agentAPI == null)
+        {
+            Debug.LogError("AgentAPI component not found!");
+        }
+
+        if (character == null)
+        {
+            Debug.LogError("Character component not found!");
         }
     }
 
@@ -80,9 +95,19 @@ public class NPCMovement : MonoBehaviour
 
     IEnumerator IdleAndMoveRoutine()
     {
+        int lastid_id = character.Id;
         while (true)
         {
             yield return new WaitForSeconds(idleTime);
+
+            while (character.Id == lastid_id)
+            {
+                Debug.Log("characterid = " + character.Id + " lastid_id = " + lastid_id);
+                // Wait until the character's ID is set
+                Debug.Log("Waiting for character ID to be set...");
+                yield return new WaitForSeconds(20.0f);
+            }
+
             Transform enemy = FindNearestEnemyWithTag("Slime");
 
             if (enemy != null)
@@ -91,20 +116,59 @@ public class NPCMovement : MonoBehaviour
             }
             else if (visibleDestinations.Count > 0)
             {
-                Transform destination = ChooseRandomDestination();
-                if (destination != null)
-                {
-                    MoveToDestination(destination.position);
-                }
+                yield return StartCoroutine(GetDestinationFromAPI());
             }
         }
     }
 
-    private Transform ChooseRandomDestination()
+    private IEnumerator GetDestinationFromAPI()
     {
-        if (visibleDestinations.Count == 0) return null;
-        int randomIndex = Random.Range(0, visibleDestinations.Count);
-        return visibleDestinations[randomIndex];
+        // Prepare a hardcoded string of destinations
+        string[] destinationNames = { "home", "river", "slime meat", "lake" };
+        
+        // Convert the list of destination names to JSON
+        string jsonData = JsonUtility.ToJson(destinationNames);
+        string url = $"http://127.0.0.1:8000/agents/{character.Id}/next_destination";
+
+        using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST"))
+        {
+            byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(jsonData);
+            webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            webRequest.downloadHandler = new DownloadHandlerBuffer();
+            webRequest.SetRequestHeader("Content-Type", "application/json");
+
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError($"Error: {webRequest.error}");
+                Debug.LogError($"Response: {webRequest.downloadHandler.text}");
+            }
+            else if (webRequest.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Destination received from API successfully");
+                string responseText = webRequest.downloadHandler.text;
+
+                // Check the response
+                Debug.Log($"Response Text: {responseText}");
+
+                var responseData = JsonUtility.FromJson<Dictionary<string, string>>(responseText);
+
+                if (responseData.TryGetValue("place", out string destinationName))
+                {
+                    Transform destination = visibleDestinations.Find(d => d.name == destinationName);
+                    if (destination != null)
+                    {
+                        MoveToDestination(destination.position);
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogError($"Unexpected response status: {webRequest.responseCode}");
+                Debug.LogError($"Response: {webRequest.downloadHandler.text}");
+            }
+        }
     }
 
     private void MoveToDestination(Vector3 destination)
@@ -148,20 +212,16 @@ public class NPCMovement : MonoBehaviour
         SlimeMovement slime = enemy.GetComponent<SlimeMovement>();
     }
 
-        void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D other)
     {
-        /*if (other.CompareTag("Slime"))
+        if (other.CompareTag("Interactable"))
         {
-            SlimeMovement slime = other.GetComponent<SlimeMovement>();
+            ItemInteractable item = other.GetComponent<ItemInteractable>();
+            if (item != null)
+            {
+                item.InteractWithNPC(GetComponent<NPC>());
+            }
         }
-        else */
-        if (other.CompareTag("Interactable")){
-        ItemInteractable item = other.GetComponent<ItemInteractable>();
-        if (item != null)
-        {
-            item.InteractWithNPC(GetComponent<NPC>());
-        }
-    }
     }
 
     void OnDrawGizmos()
@@ -170,6 +230,3 @@ public class NPCMovement : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, visionRadius);
     }
 }
-
-
-

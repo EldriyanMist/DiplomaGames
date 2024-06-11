@@ -17,7 +17,12 @@ public class Character : MonoBehaviour
     public int Agility;
     public int Endurance;
     public string Background_info;
-    public Vector2 Position;
+    public string Status;
+
+    void Awake()
+    {
+        Id = Random.Range(1, int.MaxValue); // Generate a random ID
+    }
 
     // References to UI Elements
     public Slider healthSlider;
@@ -53,7 +58,38 @@ public class Character : MonoBehaviour
 
     public string ToJson()
     {
-        return JsonUtility.ToJson(this);
+        SerializableCharacter serializableCharacter = new SerializableCharacter(this);
+        return JsonUtility.ToJson(serializableCharacter);
+    }
+
+    private class SerializableCharacter
+    {
+        public int id;
+        public string name;
+        public int health;
+        public int max_health;
+        public int level;
+        public float experience;
+        public float max_experience;
+        public int strength;
+        public int agility;
+        public string background_info;
+        public string status;
+
+        public SerializableCharacter(Character character)
+        {
+            id = character.Id;
+            name = character.Name;
+            health = character.Health;
+            max_health = character.MaxHealth;
+            level = character.Level;
+            experience = character.Experience;
+            max_experience = character.MaxExperience;
+            strength = character.Strength;
+            agility = character.Agility;
+            background_info = character.Background_info;
+            status = character.Status;
+        }
     }
 
     public void UpdateDataFromUI()
