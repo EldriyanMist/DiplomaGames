@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class Chest : MonoBehaviour
 {
@@ -8,8 +9,14 @@ public class Chest : MonoBehaviour
 
     void Start()
     {
-        // Temporarily activate and deactivate the panel to ensure it initializes properly
+        // Start the coroutine to initialize the panel with a delay
+        StartCoroutine(InitializeChestInventoryPanel());
+    }
+
+    IEnumerator InitializeChestInventoryPanel()
+    {
         chestInventoryPanel.SetActive(true);
+        yield return new WaitForEndOfFrame(); // Wait for one frame
         chestInventoryPanel.SetActive(false);
     }
 
