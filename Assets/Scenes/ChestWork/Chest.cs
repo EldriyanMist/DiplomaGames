@@ -8,7 +8,9 @@ public class Chest : MonoBehaviour
 
     void Start()
     {
-        chestInventoryPanel.SetActive(false); // Ensure the panel is hidden at start
+        // Temporarily activate and deactivate the panel to ensure it initializes properly
+        chestInventoryPanel.SetActive(true);
+        chestInventoryPanel.SetActive(false);
     }
 
     void OnMouseDown()

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class InventoryPlayer : MonoBehaviour
 {
     public GameObject slot;   // Reference to the single slot
+    public GameObject statusWindow; // Reference to the status window
     private Item currentItem; // Reference to the current item
     public List<ItemPrefabMapping> itemPrefabMappings; // List to map items to their prefabs
 
@@ -94,6 +95,7 @@ public class InventoryPlayer : MonoBehaviour
         }
         return false;
     }
+
     public Item GetCurrentItem()
     {
         return currentItem; // Return the current item in the NPC's inventory
