@@ -5,54 +5,139 @@ using UnityEngine;
 public class ScriptedBehaviors : MonoBehaviour
 {
     private UnityEngine.AI.NavMeshAgent agent;
-    private List<Transform> visibleDestinations;
+    private RandomMovement randomMovement;
+    private InventoryPlayer playerInventory;
+    private InventoryChest chest;
 
     void Start()
     {
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        randomMovement = GetComponent<RandomMovement>();
+        playerInventory = GetComponent<InventoryPlayer>();
+        chest = FindObjectOfType<InventoryChest>();
 
         if (agent == null)
         {
             Debug.LogError("NavMeshAgent component not found!");
         }
-    }
 
-    public void Initialize(List<Transform> visibleDestinations)
-    {
-        this.visibleDestinations = visibleDestinations;
-    }
-
-    public void ExecuteScriptedMovement(string name)
-    {
-        // Call specific scripted movement functions based on the name
-        switch (name)
+        if (randomMovement == null)
         {
-            case "MoveToFireplace":
-                MoveToInteractableByName("Fireplace");
+            Debug.LogError("RandomMovement component not found!");
+        }
+
+        if (playerInventory == null)
+        {
+            Debug.LogError("InventoryPlayer component not found!");
+        }
+
+        if (chest == null)
+        {
+            Debug.LogError("InventoryChest component not found!");
+        }
+    }
+
+    public void ExecuteScriptedMovement(string behaviorName)
+    {
+        switch (behaviorName)
+        {
+            case "Patrol":
+                StartCoroutine(PatrolBehavior());
                 break;
-            case "MoveToTree":
-                MoveToInteractableByName("Tree01");
+            case "Guard":
+                StartCoroutine(GuardBehavior());
                 break;
-            case "MoveToStatue":
-                MoveToInteractableByName("Statue");
+            case "StoreInChest":
+                StartCoroutine(StoreInChestBehavior());
                 break;
+            // Add more cases for other behaviors as needed
             default:
-                Debug.LogWarning($"Scripted behavior {name} not found.");
+                Debug.LogWarning($"Behavior {behaviorName} not recognized.");
                 break;
         }
     }
 
-    private void MoveToInteractableByName(string name)
+    private IEnumerator PatrolBehavior()
     {
-        foreach (Transform dest in visibleDestinations)
+        List<string> patrolPoints = new List<string> { "Fireplace02", "Tree01", "Statue" };
+
+        while (true)
         {
-            if (dest.name == name)
+            foreach (string pointName in patrolPoints)
             {
-                agent.SetDestination(dest.position);
-                Debug.Log($"Moving to {name} at position {dest.position}");
-                return;
+                Transform destination = FindVisibleDestinationByName(pointName);
+                if (destination != null)
+                {
+                    agent.SetDestination(destination.position);
+                    yield return new WaitUntil(() => agent.remainingDistance < 0.1f);
+                    yield return new WaitForSeconds(7f); // Wait at the patrol point for 7 seconds
+
+                    // Wait if the progress bar is running
+                    while (randomMovement.isProgressBarRunning)
+                    {
+                        yield return null;
+                    }
+                }
             }
         }
-        Debug.Log($"No visible destination with the name {name} found.");
+    }
+
+    private IEnumerator GuardBehavior()
+    {
+        Transform guardPoint = FindVisibleDestinationByName("Fireplace");
+
+        if (guardPoint != null)
+        {
+            while (true)
+            {
+                agent.SetDestination(guardPoint.position);
+                yield return new WaitUntil(() => agent.remainingDistance < 0.1f);
+                yield return new WaitForSeconds(7f); // Stay at the guard point for 7 seconds
+
+                // Wait if the progress bar is running
+                while (randomMovement.isProgressBarRunning)
+                {
+                    yield return null;
+                }
+            }
+        }
+    }
+
+    private IEnumerator StoreInChestBehavior()
+    {
+        // Move to the chest's location
+        Transform chestTransform = chest.transform;
+        agent.SetDestination(chestTransform.position);
+        yield return new WaitUntil(() => agent.remainingDistance < 0.1f);
+
+        // Open the chest
+        Chest chestScript = chest.GetComponent<Chest>();
+        chestScript.ToggleChest();
+        yield return new WaitForSeconds(1f); // Wait a moment to ensure the chest is open
+
+        // Store the item in the chest
+        if (playerInventory.PutItemInChest(chest))
+        {
+            Debug.Log("Item stored in chest successfully.");
+        }
+        else
+        {
+            Debug.Log("Failed to store item in chest.");
+        }
+
+        // Close the chest
+        chestScript.ToggleChest();
+    }
+
+    private Transform FindVisibleDestinationByName(string name)
+    {
+        foreach (GameObject destination in GameObject.FindGameObjectsWithTag("Interactable"))
+        {
+            if (destination.name == name)
+            {
+                return destination.transform;
+            }
+        }
+        return null;
     }
 }

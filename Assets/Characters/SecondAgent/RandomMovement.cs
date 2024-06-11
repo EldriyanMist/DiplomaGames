@@ -16,6 +16,8 @@ public class RandomMovement : MonoBehaviour
     private Collider2D attackHitbox;
     private NPC npc;
     private bool isMovingToInteractable = false;
+    public bool isProgressBarRunning = false; // Make this public
+
     private ScriptedBehaviors scriptedBehaviors;
 
     void Start()
@@ -75,12 +77,6 @@ public class RandomMovement : MonoBehaviour
         {
             Debug.Log(dest.name);
         }
-
-        // Initialize scripted behaviors with the updated visible destinations
-        if (scriptedBehaviors != null)
-        {
-            scriptedBehaviors.Initialize(visibleDestinations);
-        }
     }
 
     private bool IsDestinationVisible(Transform destination)
@@ -96,7 +92,7 @@ public class RandomMovement : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(idleTime);
-            if (!isMovingToInteractable)
+            if (!isMovingToInteractable && !isProgressBarRunning) // Check if progress bar is not running
             {
                 Transform enemy = FindNearestEnemyWithTag("Slime");
 
@@ -106,11 +102,8 @@ public class RandomMovement : MonoBehaviour
                 }
                 else
                 {
-                    // Test scripted behavior by name
-                    if (scriptedBehaviors != null)
-                    {
-                        scriptedBehaviors.ExecuteScriptedMovement("MoveToFireplace");
-                    }
+                    // Test moving to a specific visible location by name
+                    scriptedBehaviors.ExecuteScriptedMovement("Patrol");
                 }
             }
         }
@@ -184,6 +177,11 @@ public class RandomMovement : MonoBehaviour
         if (visibleDestinations.Count == 0) return null;
         int randomIndex = Random.Range(0, visibleDestinations.Count);
         return visibleDestinations[randomIndex];
+    }
+
+    public void SetProgressBarState(bool state)
+    {
+        isProgressBarRunning = state; // Set the state of the progress bar
     }
 
     void OnDrawGizmos()
