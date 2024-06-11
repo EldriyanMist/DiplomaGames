@@ -785,7 +785,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 242625996}
-  - component: {fileID: 242625997}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -808,21 +807,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &242625997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 242625994}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8366390546567534c8231703e1d02afe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  statusWindowPrefab: {fileID: 0}
-  agentAPI: {fileID: 0}
-  characters: []
 --- !u!4 &287716410 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2055102311959635375, guid: f681a54372d73d74785b9c9d4ac477e8, type: 3}
@@ -1661,7 +1645,7 @@ MonoBehaviour:
   m_VoxelSize: 0.16666667
   m_BuildHeightMesh: 0
   m_HideEditorLogs: 0
-  m_NavMeshData: {fileID: 23800000, guid: 8fbb7c16e72989d4c820a704ab17a7ef, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 01e51e1f1b471cb4ea07b31e951c03b9, type: 2}
 --- !u!4 &616093112
 Transform:
   m_ObjectHideFlags: 0
@@ -5023,9 +5007,6 @@ PrefabInstance:
       addedObject: {fileID: 1943244151}
     - targetCorrespondingSourceObject: {fileID: 9106850825060158115, guid: 6ea82122630f5304986006e3b73566c6, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1943244149}
-    - targetCorrespondingSourceObject: {fileID: 9106850825060158115, guid: 6ea82122630f5304986006e3b73566c6, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1943244148}
     - targetCorrespondingSourceObject: {fileID: 9106850825060158115, guid: 6ea82122630f5304986006e3b73566c6, type: 3}
       insertIndex: -1
@@ -5033,6 +5014,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9106850825060158115, guid: 6ea82122630f5304986006e3b73566c6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1943244164}
+    - targetCorrespondingSourceObject: {fileID: 9106850825060158115, guid: 6ea82122630f5304986006e3b73566c6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1943244173}
     - targetCorrespondingSourceObject: {fileID: 8116091439759297801, guid: 6ea82122630f5304986006e3b73566c6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1976076401}
@@ -5075,18 +5059,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aaae0543c2c2ed42bfe1f5d3c80f142, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1943244149
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1943244144}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cac6bbadbac879b4fbb5d508b6e7fd53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1943244151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5109,7 +5081,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1943244144}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cfeeb21c0363a7b41801c13ae8ccb800, type: 3}
   m_Name: 
@@ -5189,18 +5161,29 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1943244144}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7995c93acd4fbfb4bb9868c0e1852b0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visionRadius: 10
   checkInterval: 2
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 0
   attackRange: 1.5
   attackDamage: 14
+--- !u!114 &1943244173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1943244144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c91ddf14e8a2c84a8c420ea7c37d1c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1976076399
 MonoBehaviour:
   m_ObjectHideFlags: 0

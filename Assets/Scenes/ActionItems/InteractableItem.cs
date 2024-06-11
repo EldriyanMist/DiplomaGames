@@ -7,6 +7,7 @@ public class ItemInteractable : MonoBehaviour
     public GameObject interactionPanel; // Reference to the existing interaction panel
     public Button actionButtonPrefab; // Prefab for action buttons
     public List<Action> actions; // List of actions available for this item
+    public float interactionDuration = 5f; // Example duration for the interaction
 
     private List<Button> actionButtons = new List<Button>();
     private NPC currentNPC; // To keep track of the NPC interacting with the item
@@ -115,5 +116,10 @@ public class ItemInteractable : MonoBehaviour
         screenPoint.x += (interactionPanel.GetComponent<RectTransform>().rect.width / 2) + 30;
 
         interactionPanel.transform.position = screenPoint;
+    }
+
+    public float InteractionDuration
+    {
+        get { return interactionDuration; }
     }
 }

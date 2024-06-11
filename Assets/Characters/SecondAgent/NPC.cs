@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class NPC : MonoBehaviour
 {
-    public Character characterData;
+    public Character characterData; // Assume this is already attached in the Inspector
     public GameObject statusWindow;
     private StatusWindowManager statusWindowManager;
     private AgentAPI agentAPI;
@@ -26,7 +26,13 @@ public class NPC : MonoBehaviour
             return;
         }
 
-        characterData = gameObject.AddComponent<Character>();
+        if (characterData == null)
+        {
+            Debug.LogError("CharacterData is not assigned.");
+            return;
+        }
+
+        // Initialize character data values
         characterData.Name = "NPC";
         characterData.Health = 100;
         characterData.MaxHealth = 100;
