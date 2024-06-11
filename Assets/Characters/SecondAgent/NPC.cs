@@ -62,31 +62,6 @@ public class NPC : MonoBehaviour
         agentAPI.CreateAgent(characterData); // Create agent on start
     }
 
-    void OnMouseDown()
-    {
-        ToggleStatusWindow();
-    }
-
-    private void ToggleStatusWindow()
-    {
-        if (statusWindow.activeSelf)
-        {
-            statusWindow.SetActive(false);
-        }
-        else
-        {
-            statusWindow.SetActive(true);
-            statusWindowManager.UpdateStatusWindow(characterData);
-            UIFollowCharacter follow = statusWindow.GetComponent<UIFollowCharacter>();
-            if (follow == null)
-            {
-                Debug.LogError("UIFollowCharacter component not found on StatusWindow.");
-                return;
-            }
-            follow.characterTransform = transform;
-        }
-    }
-
     public void TakeDamage(int amount)
     {
         characterData.TakeDamage(amount);

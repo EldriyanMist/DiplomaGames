@@ -5,8 +5,10 @@ using UnityEngine.UI;
 public class InventoryPlayer : MonoBehaviour
 {
     public GameObject slot;   // Reference to the single slot
+    public GameObject statusWindow; // Reference to the status window
     private Item currentItem; // Reference to the current item
     public List<ItemPrefabMapping> itemPrefabMappings; // List to map items to their prefabs
+    public float dropOffset = 1.0f; // Offset distance for dropping items
 
     void Start()
     {
@@ -46,8 +48,10 @@ public class InventoryPlayer : MonoBehaviour
             GameObject prefabToDrop = itemPrefabMappings.Find(mapping => mapping.item == currentItem)?.prefab;
             if (prefabToDrop != null)
             {
-                // Instantiate the collectable item prefab at the player's position
-                Vector3 dropPosition = transform.position;
+                // Calculate a drop position with an offset to the side
+                Vector3 dropPosition = transform.position + new Vector3(dropOffset, 0, 0);
+
+                // Instantiate the collectable item prefab at the drop position
                 GameObject droppedItem = Instantiate(prefabToDrop, dropPosition, Quaternion.identity);
 
                 // Set the item's properties on the dropped prefab
@@ -94,11 +98,13 @@ public class InventoryPlayer : MonoBehaviour
         }
         return false;
     }
+
     public Item GetCurrentItem()
     {
         return currentItem; // Return the current item in the NPC's inventory
     }
 }
+
 
 
 [System.Serializable]
