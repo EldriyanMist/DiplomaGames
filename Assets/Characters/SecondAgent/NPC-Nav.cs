@@ -16,10 +16,13 @@ public class NPCMovement : MonoBehaviour
     private List<Transform> visibleDestinations = new List<Transform>();
     private float idleTime = 3.5f;
     private Collider2D attackHitbox;
+    private bool isMovingToInteractable = false;
 
     public NPController npcController;
     public AgentAPI agentAPI;
     public Character character;
+    private bool isCharacterReady = false; // Flag to indicate if character is ready
+    private bool isSavedOnAPI = false; // Flag to indicate if character ID is saved on API
 
     void Start()
     {
@@ -32,7 +35,7 @@ public class NPCMovement : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         npcController = GetComponent<NPController>();
         attackHitbox = GetComponentInChildren<Collider2D>();
-        agentAPI = GetComponent<AgentAPI>();
+        agentAPI = FindObjectOfType<AgentAPI>();
         character = GetComponent<Character>();
 
         if (attackHitbox == null)
@@ -53,8 +56,58 @@ public class NPCMovement : MonoBehaviour
 
     private void StartRoutines()
     {
+        StartCoroutine(WaitForCharacterReady());
         StartCoroutine(VisibilityCheckRoutine());
-        StartCoroutine(IdleAndMoveRoutine());
+    }
+
+    IEnumerator WaitForCharacterReady()
+    {
+        while (true)
+        {
+            Debug.Log("Checking if character ID is set...");
+            yield return new WaitForSeconds(checkInterval);
+            if (character.Id != 0)
+            {
+                Debug.Log($"Character ID is set: {character.Id}");
+                // Start coroutine to check if character ID is saved on the API
+                yield return StartCoroutine(CheckCharacterIDOnAPI());
+                if (isSavedOnAPI)
+                {
+                    Debug.Log("Character ID is saved on the API.");
+                    isCharacterReady = true;
+                    StartCoroutine(IdleAndMoveRoutine());
+                    break;
+                }
+                else
+                {
+                    Debug.Log("Character ID is not saved on the API yet.");
+                }
+            }
+            else
+            {
+                Debug.Log("Character ID is still not set.");
+            }
+        }
+    }
+
+    private IEnumerator CheckCharacterIDOnAPI()
+    {
+        Debug.Log("Checking character ID on the API...");
+        string url = $"http://127.0.0.1:8000/agents/{character.Id}";
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
+        {
+            yield return webRequest.SendWebRequest();
+            if (webRequest.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Character ID check on API success.");
+                isSavedOnAPI = true;
+            }
+            else
+            {
+                Debug.LogError($"Character ID check failed: {webRequest.error}");
+                isSavedOnAPI = false;
+            }
+        }
     }
 
     IEnumerator VisibilityCheckRoutine()
@@ -84,7 +137,7 @@ public class NPCMovement : MonoBehaviour
         Vector3 directionToDestination = destination.position - transform.position;
         float distanceToDestination = Vector3.Distance(transform.position, destination.position);
 
-        if (distanceToDestination <= visionRadius && 
+        if (distanceToDestination <= visionRadius &&
             !Physics2D.Raycast(transform.position, directionToDestination, distanceToDestination, obstacleLayer))
         {
             return true;
@@ -95,84 +148,114 @@ public class NPCMovement : MonoBehaviour
 
     IEnumerator IdleAndMoveRoutine()
     {
-        int lastid_id = character.Id;
         while (true)
         {
             yield return new WaitForSeconds(idleTime);
 
-            while (character.Id == lastid_id)
+            if (!isCharacterReady)
             {
-                Debug.Log("characterid = " + character.Id + " lastid_id = " + lastid_id);
-                // Wait until the character's ID is set
-                Debug.Log("Waiting for character ID to be set...");
-                yield return new WaitForSeconds(20.0f);
+                Debug.Log("Character is not ready yet.");
+                yield return null;
+                continue;
             }
 
-            Transform enemy = FindNearestEnemyWithTag("Slime");
-
-            if (enemy != null)
+            if (!isMovingToInteractable)
             {
-                yield return StartCoroutine(MoveAndAttack(enemy));
-            }
-            else if (visibleDestinations.Count > 0)
-            {
-                yield return StartCoroutine(GetDestinationFromAPI());
-            }
-        }
-    }
+                Transform enemy = FindNearestEnemyWithTag("Slime");
 
-    private IEnumerator GetDestinationFromAPI()
-    {
-        // Prepare a hardcoded string of destinations
-        string[] destinationNames = { "home", "river", "slime meat", "lake" };
-        
-        // Convert the list of destination names to JSON
-        string jsonData = JsonUtility.ToJson(destinationNames);
-        string url = $"http://127.0.0.1:8000/agents/{character.Id}/next_destination";
-
-        using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST"))
-        {
-            byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(jsonData);
-            webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            webRequest.downloadHandler = new DownloadHandlerBuffer();
-            webRequest.SetRequestHeader("Content-Type", "application/json");
-
-            yield return webRequest.SendWebRequest();
-
-            if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
-            {
-                Debug.LogError($"Error: {webRequest.error}");
-                Debug.LogError($"Response: {webRequest.downloadHandler.text}");
-            }
-            else if (webRequest.result == UnityWebRequest.Result.Success)
-            {
-                Debug.Log("Destination received from API successfully");
-                string responseText = webRequest.downloadHandler.text;
-
-                // Check the response
-                Debug.Log($"Response Text: {responseText}");
-
-                var responseData = JsonUtility.FromJson<Dictionary<string, string>>(responseText);
-
-                if (responseData.TryGetValue("place", out string destinationName))
+                if (enemy != null)
                 {
-                    Transform destination = visibleDestinations.Find(d => d.name == destinationName);
-                    if (destination != null)
-                    {
-                        MoveToDestination(destination.position);
-                    }
+                    Debug.Log("Enemy found, starting attack routine.");
+                    yield return StartCoroutine(MoveAndAttack(enemy));
+                }
+                else if (visibleDestinations.Count > 0)
+                {
+                    Debug.Log("No enemy found, getting destination from API.");
+                    yield return StartCoroutine(GetDestinationFromAPI());
+                }
+                else
+                {
+                    Debug.Log("No visible destinations found.");
                 }
             }
-            else
-            {
-                Debug.LogError($"Unexpected response status: {webRequest.responseCode}");
-                Debug.LogError($"Response: {webRequest.downloadHandler.text}");
-            }
         }
     }
+
+private IEnumerator GetDestinationFromAPI()
+{
+    // Prepare a simple hardcoded list of destinations for testing
+    List<string> destinationNames = new List<string> { "home", "river", "slime meat", "lake" };
+
+    // Manually convert the list of destination names to JSON array string
+    string jsonData = "[\"" + string.Join("\",\"", destinationNames) + "\"]";
+    Debug.Log($"JSON Data being sent: {jsonData}");
+
+    string url = $"http://127.0.0.1:8000/agents/{character.Id}/next_destination";
+
+    Debug.Log("Requesting destination from API...");
+    using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST"))
+    {
+        byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(jsonData);
+        webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        webRequest.downloadHandler = new DownloadHandlerBuffer();
+        webRequest.SetRequestHeader("Content-Type", "application/json");
+
+        yield return webRequest.SendWebRequest();
+
+        if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.LogError($"Error: {webRequest.error}");
+            Debug.LogError($"Response: {webRequest.downloadHandler.text}");
+        }
+        else if (webRequest.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Destination received from API successfully");
+            string responseText = webRequest.downloadHandler.text;
+
+            // Check the response
+            Debug.Log($"Response Text: {responseText}");
+
+            var responseData = JsonUtility.FromJson<Dictionary<string, string>>(responseText);
+
+            if (responseData.TryGetValue("place", out string destinationName))
+            {
+                Debug.Log($"Destination received: {destinationName}");
+                Transform destination = visibleDestinations.Find(d => d.name == destinationName);
+                if (destination != null)
+                {
+                    Debug.Log($"Moving to destination: {destinationName}");
+                    MoveToDestination(destination.position);
+                }
+                else
+                {
+                    Debug.LogError($"Destination not found: {destinationName}");
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError($"Unexpected response status: {webRequest.responseCode}");
+            Debug.LogError($"Response: {webRequest.downloadHandler.text}");
+        }
+    }
+}
+
+// Wrapper class to properly format the list for JSON serialization
+[System.Serializable]
+private class StringListWrapper
+{
+    public List<string> destinations;
+
+    public StringListWrapper(List<string> destinations)
+    {
+        this.destinations = destinations;
+    }
+}
+
 
     private void MoveToDestination(Vector3 destination)
     {
+        Debug.Log($"Setting destination: {destination}");
         agent.SetDestination(destination);
     }
 
@@ -208,6 +291,7 @@ public class NPCMovement : MonoBehaviour
 
     private void Attack(Transform enemy)
     {
+        Debug.Log("Attacking enemy.");
         npcController.Attack_animation();
         SlimeMovement slime = enemy.GetComponent<SlimeMovement>();
     }
@@ -219,9 +303,21 @@ public class NPCMovement : MonoBehaviour
             ItemInteractable item = other.GetComponent<ItemInteractable>();
             if (item != null)
             {
+                Debug.Log("Interacting with item.");
+                isMovingToInteractable = true;
+                StopAllCoroutines(); // Stop other routines while interacting
+                agent.SetDestination(transform.position); // Stop movement
                 item.InteractWithNPC(GetComponent<NPC>());
+                StartCoroutine(HandleInteraction(item.InteractionDuration));
             }
         }
+    }
+
+    private IEnumerator HandleInteraction(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        isMovingToInteractable = false;
+        StartRoutines(); // Resume routines after interaction
     }
 
     void OnDrawGizmos()
