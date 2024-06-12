@@ -21,6 +21,7 @@ public class StatusManager : MonoBehaviour
     public TextMeshProUGUI agilityText;
     public TextMeshProUGUI enduranceText;
     public TextMeshProUGUI strengthText;
+    public TextMeshProUGUI backgroundInfoText;
     public GameObject npcIcon;
 
     private int currentHealth;
@@ -74,6 +75,12 @@ public class StatusManager : MonoBehaviour
         currentHealth = Mathf.Max(currentHealth - amount, 0);
         SetHealth(currentHealth);
     }
+
+    public void IncreaseHealth(int amount)
+    {
+        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+        SetHealth(currentHealth);
+    }
     #endregion
 
     #region Hunger Management
@@ -89,6 +96,12 @@ public class StatusManager : MonoBehaviour
     {
         hungerSlider.value = hunger;
         hungerFill.color = hungerGradient.Evaluate(hungerSlider.normalizedValue);
+    }
+
+    public void IncreaseHunger(int amount)
+    {
+        currentHunger = Mathf.Min(currentHunger + amount, maxHunger);
+        SetHunger(currentHunger);
     }
 
     private IEnumerator DecreaseHungerOverTime()

@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: ChickenLeg
   icon: {fileID: 1905365675, guid: fb4311bdde6b7cb4fbf265c933c66307, type: 3}
+  isEdible: 1
+  hungerRestoration: 50
+  healthRestoration: 20
