@@ -16,8 +16,7 @@ public class RandomMovement : MonoBehaviour
     private Collider2D attackHitbox;
     private NPC npc;
     private bool isMovingToInteractable = false;
-    public bool isProgressBarRunning = false; // Make this public
-
+    public bool isProgressBarRunning = false; // Add this property
     private ScriptedBehaviors scriptedBehaviors;
 
     void Start()
@@ -70,13 +69,6 @@ public class RandomMovement : MonoBehaviour
                 visibleDestinations.Add(destination.transform);
             }
         }
-
-        // Debug log to show visible destinations
-        Debug.Log("Visible Destinations:");
-        foreach (Transform dest in visibleDestinations)
-        {
-            Debug.Log(dest.name);
-        }
     }
 
     private bool IsDestinationVisible(Transform destination)
@@ -102,8 +94,8 @@ public class RandomMovement : MonoBehaviour
                 }
                 else
                 {
-                    // Test moving to a specific visible location by name
-                    scriptedBehaviors.ExecuteScriptedMovement("Patrol");
+                    // Call the CollectAndStore behavior
+                    scriptedBehaviors.ExecuteScriptedMovement("CollectAndStore");
                 }
             }
         }
@@ -146,25 +138,18 @@ public class RandomMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Interactable"))
+        if (other.CompareTag("Collectable"))
         {
-            ItemInteractable item = other.GetComponent<ItemInteractable>();
-            if (item != null)
+            Collectable collectable = other.GetComponent<Collectable>();
+            if (collectable != null)
             {
-                isMovingToInteractable = true;
-                StopAllCoroutines(); // Stop other routines while interacting
-                agent.SetDestination(transform.position); // Stop movement
-                item.InteractWithNPC(GetComponent<NPC>());
-                StartCoroutine(HandleInteraction(item.InteractionDuration));
+                bool wasCollected = scriptedBehaviors.CollectItem(collectable.item);
+                if (wasCollected)
+                {
+                    Destroy(other.gameObject);
+                }
             }
         }
-    }
-
-    private IEnumerator HandleInteraction(float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        isMovingToInteractable = false;
-        StartRoutines(); // Resume routines after interaction
     }
 
     private void MoveToDestination(Vector3 destination)
