@@ -4,7 +4,7 @@ public class UnifiedTestScript : MonoBehaviour
 {
     public InventoryChest chestInventory;
     public InventoryPlayer npcInventory;
-    public Item testItem;
+    public Item testItem; // Example item for adding to chest
 
     void Start()
     {
@@ -45,6 +45,11 @@ public class UnifiedTestScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T))
         {
             TakeItemFromChest();
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            ConsumeItemFromInventory();
         }
     }
 
@@ -103,6 +108,14 @@ public class UnifiedTestScript : MonoBehaviour
         {
             bool wasTaken = npcInventory.TakeItemFromChest(chestInventory, 0);
             Debug.Log(wasTaken ? "Item taken from chest and added to NPC inventory." : "Failed to take item from chest.");
+        }
+    }
+
+    void ConsumeItemFromInventory()
+    {
+        if (npcInventory != null)
+        {
+            npcInventory.ConsumeItem();
         }
     }
 }

@@ -5,10 +5,12 @@ using UnityEngine.UI;
 public class InventoryPlayer : MonoBehaviour
 {
     public GameObject slot;   // Reference to the single slot
-    public GameObject statusWindow; // Reference to the status window
     private Item currentItem; // Reference to the current item
     public List<ItemPrefabMapping> itemPrefabMappings; // List to map items to their prefabs
     public float dropOffset = 1.0f; // Offset distance for dropping items
+
+    // Reference to StatusManager to update health and hunger
+    public StatusManager statusManager;
 
     void Start()
     {
@@ -38,6 +40,16 @@ public class InventoryPlayer : MonoBehaviour
     {
         currentItem = null; // Remove the current item
         slot.SetActive(false); // Hide the slot
+    }
+
+    public void ConsumeItem()
+    {
+        if (currentItem != null && currentItem.isEdible)
+        {
+            statusManager.IncreaseHunger(currentItem.hungerRestoration);
+            statusManager.IncreaseHealth(currentItem.healthRestoration);
+            RemoveItem();
+        }
     }
 
     public void DropItem()
@@ -104,6 +116,7 @@ public class InventoryPlayer : MonoBehaviour
         return currentItem; // Return the current item in the NPC's inventory
     }
 }
+
 
 
 

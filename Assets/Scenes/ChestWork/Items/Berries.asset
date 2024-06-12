@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0bc7767f107be164cba2172ee5b6bd7a, type: 3}
-  m_Name: SlimeMeat
+  m_Name: Berries
   m_EditorClassIdentifier: 
-  itemName: SlimeMeat
-  icon: {fileID: 814950790, guid: b228ac2dae1f1904187a27f82ec0d1db, type: 3}
+  itemName: Berries
+  icon: {fileID: 21300000, guid: 3e219d5964d7ef1408da169b0cbdbcb6, type: 3}
   isEdible: 1
-  hungerRestoration: 30
-  healthRestoration: 10
+  hungerRestoration: 10
+  healthRestoration: 15
